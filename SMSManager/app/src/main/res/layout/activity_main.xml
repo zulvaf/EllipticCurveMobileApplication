@@ -6,7 +6,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-    android:background="#ffff8d7a">
+    android:background="@color/lightColor">
 
     <TextView android:text="@string/android_sms"
         android:layout_width="wrap_content"
@@ -33,6 +33,7 @@
             android:layout_marginRight="10dip"
             android:layout_marginTop="10dip"
             android:layout_centerHorizontal="true"
+            android:background="@color/colorPrimary"
             android:onClick="goToCompose" />
 
         <Button
@@ -44,6 +45,7 @@
             android:layout_marginRight="10dip"
             android:layout_marginTop="10dip"
             android:layout_centerHorizontal="true"
+            android:background="@color/colorPrimary"
             android:onClick="goToInbox" />
 
         <Button
@@ -55,17 +57,20 @@
             android:layout_marginRight="10dip"
             android:layout_marginTop="10dip"
             android:layout_centerHorizontal="true"
+            android:background="@color/colorPrimary"
             android:onClick="goToOutbox" />
 
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:text="Generate Key"
             android:id="@+id/btnGenerator"
             android:layout_marginLeft="10dip"
             android:layout_marginRight="10dip"
             android:layout_marginTop="10dip"
             android:layout_centerHorizontal="true"
+            android:background="@color/colorPrimary"
             android:onClick="goToKeyGenerator" />
     </LinearLayout>
 
