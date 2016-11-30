@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,11 +30,12 @@ import java.util.Date;
  */
 public class SendSMS extends Activity {
     //private static SendSMS inst;
-    Button sendBtn;
-    EditText txtPhoneNo;
-    EditText txtMessage;
-    String phoneNo;
-    String message;
+    private ToggleButton isEncrypt, isSigned;
+    private Button sendBtn;
+    private EditText txtPhoneNo;
+    private EditText txtMessage;
+    private String phoneNo;
+    private String message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,6 @@ public class SendSMS extends Activity {
         Button btn = (Button) findViewById(R.id.btnSendSMS);
         btn.setTextColor(Color.WHITE);
 
-        sendBtn = (Button) findViewById(R.id.btnSendSMS);
         txtPhoneNo = (EditText) findViewById(R.id.txtPhoneNo);
         txtMessage = (EditText) findViewById(R.id.txtMessage);
 
@@ -52,13 +53,15 @@ public class SendSMS extends Activity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
 
-        sendBtn.setOnClickListener(new View.OnClickListener() {
+        addListenerOnButton();
+
+        /*sendBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 sendSMSMessage();
                 Intent intent = new Intent(SendSMS.this, ReceiveSms.class);
                 startActivity(intent);
             }
-        });
+        });*/
     }
 
     protected void sendSMSMessage() {
@@ -68,5 +71,31 @@ public class SendSMS extends Activity {
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(phoneNo, null, message, null, null);
         Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+    }
+
+    public void addListenerOnButton() {
+
+        isEncrypt = (ToggleButton) findViewById(R.id.toggleEncrypt);
+        isSigned = (ToggleButton) findViewById(R.id.toggleDigSign);
+        sendBtn = (Button) findViewById(R.id.btnSendSMS);
+
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                StringBuffer result = new StringBuffer();
+                result.append("isEncrypt? : ").append(isEncrypt.getText());
+                result.append("\nisSigned : ").append(isSigned.getText());
+
+                Toast.makeText(SendSMS.this, result.toString(),
+                        Toast.LENGTH_SHORT).show();
+
+                sendSMSMessage();
+                Intent intent = new Intent(SendSMS.this, ReceiveSms.class);
+                startActivity(intent);
+
+            }
+
+        });
     }
 }
