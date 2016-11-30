@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ReceiveSms"></activity>
+        <activity android:name=".SendSMS"></activity>
     </application>
 
 </manifest>

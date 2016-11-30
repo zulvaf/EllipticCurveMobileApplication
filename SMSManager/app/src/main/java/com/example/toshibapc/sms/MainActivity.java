@@ -1,6 +1,7 @@
 package com.example.toshibapc.sms;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 
 import android.util.Log;
@@ -24,38 +27,31 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends Activity {
-
-    Button sendBtn;
-    EditText txtPhoneNo;
-    EditText txtMessage;
-    String phoneNo;
-    String message;
+public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        sendBtn = (Button) findViewById(R.id.btnSendSMS);
-        txtPhoneNo = (EditText) findViewById(R.id.editText);
-        txtMessage = (EditText) findViewById(R.id.editText2);
-
-        sendBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                //sendSMSMessage();
-                Intent intent = new Intent(MainActivity.this, ReceiveSms.class);
-                startActivity(intent);
-            }
-        });
     }
 
-    protected void sendSMSMessage() {
-        phoneNo = txtPhoneNo.getText().toString();
-        message = txtMessage.getText().toString();
+    public void goToInbox(View view) {
+        Intent intent = new Intent(MainActivity.this, ReceiveSms.class);
+        startActivity(intent);
+    }
 
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNo, null, message, null, null);
-        Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+    public void goToCompose(View view) {
+        Intent intent = new Intent(this, SendSMS.class);
+        startActivity(intent);
+    }
+
+    public void goToKeyGenerator(View view) {
+        Intent intent = new Intent(MainActivity.this, GenerateKey.class);
+        startActivity(intent);
+    }
+
+    public void goToOutbox(View view) {
+        Intent intent = new Intent(MainActivity.this, ViewSentMessages.class);
+        startActivity(intent);
     }
 }
