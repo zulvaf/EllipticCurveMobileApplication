@@ -1,7 +1,9 @@
 package com.example.toshibapc.sms;
 
+import android.app.Activity;
+
 /**
  * Created by Acer on 11/30/2016.
  */
-public class GenerateKey {
+public class GenerateKey extends Activity {
 }

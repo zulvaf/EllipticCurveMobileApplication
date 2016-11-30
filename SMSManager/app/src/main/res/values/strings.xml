@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Sms</string>
     <string name="action_settings">Settings</string>
-    <string name="android_sms">SMS App</string>
+    <string name="android_sms">ZIP SMS App</string>
 </resources>
