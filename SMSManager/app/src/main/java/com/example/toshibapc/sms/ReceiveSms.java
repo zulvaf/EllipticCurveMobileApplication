@@ -38,6 +38,7 @@ public class ReceiveSms extends Activity implements OnItemClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive_sms);
+
         smsListView = (ListView) findViewById(R.id.SMSList);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, smsMessagesList);
         smsListView.setAdapter(arrayAdapter);
@@ -48,10 +49,11 @@ public class ReceiveSms extends Activity implements OnItemClickListener {
 
     public void refreshSmsInbox() {
         ContentResolver contentResolver = getContentResolver();
-        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/"), null, null, null, null);
+        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox/"), null, null, null, null);
         int indexBody = smsInboxCursor.getColumnIndex("body");
         int indexAddress = smsInboxCursor.getColumnIndex("address");
         long timeMillis = smsInboxCursor.getColumnIndex("date");
+
         Date date = new Date(timeMillis);
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
         String dateText = format.format(date);
@@ -59,15 +61,10 @@ public class ReceiveSms extends Activity implements OnItemClickListener {
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
         arrayAdapter.clear();
         do {
-            String str = smsInboxCursor.getString(indexAddress) +" at "+
-                    "\n" + smsInboxCursor.getString(indexBody) +dateText+ "\n";
+            String str = smsInboxCursor.getString(indexAddress) + " at " + dateText +
+                    "\n" + smsInboxCursor.getString(indexBody) + "\n";
             arrayAdapter.add(str);
         } while (smsInboxCursor.moveToNext());
-    }
-
-    public void updateList(final String smsMessage) {
-        arrayAdapter.insert(smsMessage, 0);
-        arrayAdapter.notifyDataSetChanged();
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
@@ -85,10 +82,5 @@ public class ReceiveSms extends Activity implements OnItemClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void goToCompose(View view) {
-//        Intent intent = new Intent(ReceiveSms.this, SendSmsActivity.class);
-//        startActivity(intent);
     }
 }
