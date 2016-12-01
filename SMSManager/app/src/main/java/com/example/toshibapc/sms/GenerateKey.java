@@ -13,7 +13,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+
+import ecdsa.ECDSA;
+import ecdsa.Point;
 
 /**
  * Created by Acer on 11/30/2016.
@@ -22,7 +26,6 @@ public class GenerateKey extends Activity {
 
     Button generateBtn;
     EditText privateKey;
-    EditText baseValue;
     ArrayAdapter arrayAdapter;
     ArrayList<String> keyList = new ArrayList<String>();
     ListView keyListView;
@@ -39,7 +42,6 @@ public class GenerateKey extends Activity {
 
         generateBtn = (Button) findViewById(R.id.btnGenerate);
         privateKey = (EditText) findViewById(R.id.editText);
-        baseValue = (EditText) findViewById(R.id.editText2);
 
         keyListView = (ListView) findViewById(R.id.KeyList);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, keyList);
@@ -53,12 +55,13 @@ public class GenerateKey extends Activity {
     }
 
     protected void generateKey() {
-        int priKey = Integer.parseInt(privateKey.getText().toString());
-        int baseVal = Integer.parseInt(baseValue.getText().toString());
+        BigInteger priKey = new BigInteger(privateKey.getText().toString());
+
+        ECDSA ecdsa = new ECDSA();
+        Point publicKey = ecdsa.getPublicKey(priKey);
 
         arrayAdapter.clear();
-        String str = "Private key: " + priKey + "\n" + "Public key: ";
+        String str = "Private key: " + priKey + "\n" + "Public key: \n" + publicKey.getX() + "\n" + publicKey.getY();
         arrayAdapter.add(str);
-
     }
 }

@@ -28,26 +28,29 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin" >
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText"
-            android:inputType="number"
-            android:hint="Enter Private Key"
-            android:phoneNumber="true" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText2"
-            android:inputType="number"
-            android:hint="Enter Base Value" />
-
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Private key" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textCursorDrawable = "@null"
+            android:inputType="number"/>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="50dip"
+            android:textColor="@color/white"
             android:text="Generate Key"
-            android:id="@+id/btnGenerate" />
+            android:id="@+id/btnGenerate"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/colorPrimary"/>
 
         <ListView android:id="@+id/KeyList"
             android:paddingTop="@dimen/activity_vertical_margin"
