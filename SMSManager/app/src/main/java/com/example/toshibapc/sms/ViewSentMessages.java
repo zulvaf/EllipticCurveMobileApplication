@@ -29,6 +29,7 @@ public class ViewSentMessages extends Activity implements OnItemClickListener {
     ArrayList<String> smsMessagesList = new ArrayList<String>();
     ListView smsListView;
     ArrayAdapter arrayAdapter;
+    boolean isEncrypted=false, isSigned=false;
 
     public static ViewSentMessages instance() {
         return inst;
@@ -72,8 +73,17 @@ public class ViewSentMessages extends Activity implements OnItemClickListener {
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
         arrayAdapter.clear();
         do {
+            String[] body = smsInboxCursor.getString(indexBody).split("\n");
+            String message = "";
+            for (int i = 0; i < body.length; ++i) {
+                if (i == body.length - 1) {
+                    message += body[i];
+                } else {
+                    message += body[i] + "\n";
+                }
+            }
             String str = smsInboxCursor.getString(indexAddress) + " at " + dateText +
-                    "\n" + smsInboxCursor.getString(indexBody) + "\n";
+                    "\n" + message + "\n";
             arrayAdapter.add(str);
         } while (smsInboxCursor.moveToNext());
     }
@@ -84,12 +94,27 @@ public class ViewSentMessages extends Activity implements OnItemClickListener {
             String address = smsMessages[0];
             String smsMessage = "";
             for (int i = 1; i < smsMessages.length; ++i) {
-                smsMessage += smsMessages[i];
+                if (smsMessages[i].equals("encrypted")) {
+                    isEncrypted = true;
+                    continue;
+                } else if (smsMessages[i].equals("signed")) {
+                    isSigned = true;
+                    continue;
+                } else {
+                    if (i == smsMessages.length - 1) {
+                        smsMessage += smsMessages[i];
+                    } else {
+                        smsMessage += smsMessages[i] + "\n";
+                    }
+                }
             }
 
-            String smsMessageStr = address + "\n";
-            smsMessageStr += smsMessage;
-            Toast.makeText(this, smsMessageStr, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ViewSentMessages.this, ViewDetails.class);
+            intent.putExtra("address", address);
+            intent.putExtra("body", smsMessage);
+            intent.putExtra("isEncrypted", isEncrypted);
+            intent.putExtra("isSigned", isSigned);
+            startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }

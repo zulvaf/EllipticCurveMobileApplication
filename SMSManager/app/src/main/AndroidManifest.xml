@@ -27,6 +27,7 @@
         <activity android:name=".SendSMS"></activity>
         <activity android:name=".GenerateKey"></activity>
         <activity android:name=".ViewSentMessages"></activity>
+        <activity android:name=".ViewDetails"></activity>
     </application>
 
 </manifest>
