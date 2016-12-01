@@ -86,6 +86,7 @@ public class ReceiveSms extends Activity implements OnItemClickListener {
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+        String[] signature = new String[2];
         try {
             String[] smsMessages = smsMessagesList.get(pos).split("\n");
             String address = smsMessages[0];
@@ -95,7 +96,10 @@ public class ReceiveSms extends Activity implements OnItemClickListener {
                     isEncrypted = true;
                 } else if (smsMessages[i].equals("signed")) {
                     isSigned = true;
-                } else {
+                    signature[0] = smsMessages[i+2];
+                    signature[1] = smsMessages[i+3];
+                    i += 4;
+                } else if (!smsMessages[i].equals("<ds>") && !smsMessages[i].equals("</ds>")){
                     if (i == smsMessages.length - 1) {
                         smsMessage += smsMessages[i];
                     } else {
@@ -109,6 +113,7 @@ public class ReceiveSms extends Activity implements OnItemClickListener {
             intent.putExtra("body", smsMessage);
             intent.putExtra("isEncrypted", isEncrypted);
             intent.putExtra("isSigned", isSigned);
+            intent.putExtra("siganture", signature);
             startActivity(intent);
 
         } catch (Exception e) {

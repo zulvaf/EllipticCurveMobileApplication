@@ -19,9 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import ecdsa.ECDSA;
 import ecdsa.Point;
+import ecdsa.SHA1;
 
 import static android.widget.Toast.*;
 
@@ -145,17 +147,21 @@ public class ViewDetails extends Activity {
                 signedKeyX = inputX.getText().toString();
                 signedKeyY = inputY.getText().toString();
 
-                //@TODO: VERIFY
-//                ECDSA ecdsa = new ECDSA();
-//                Point publicKey = new Point(new BigInteger(signedKeyX), new BigInteger(signedKeyY));
-//                BigInteger[] signature = new BigInteger[2]; // get signature from message
-//                BigInteger e = new BigInteger(""); // hash message to e
-//
-//                if (ecdsa.verifySignature(signature, e, publicKey)) {
-//                    Toast.makeText(getApplicationContext(), "Signature verified", LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "Signature not verified", LENGTH_SHORT).show();
-//                }
+                ECDSA ecdsa = new ECDSA();
+                Point publicKey = new Point(new BigInteger(signedKeyX), new BigInteger(signedKeyY));
+                BigInteger[] signature = new BigInteger[2];
+                signature[0] = new BigInteger(getIntent().getStringArrayExtra("siganture")[0]);
+                signature[1] = new BigInteger(getIntent().getStringArrayExtra("siganture")[1]);
+                // hash message to e
+                byte[] str = message.getBytes();
+                SHA1 sha = new SHA1(str, message.length()*8);
+                BigInteger e = (sha.shaAlgorithm());
+
+                if (ecdsa.verifySignature(signature, e, publicKey)) {
+                    Toast.makeText(getApplicationContext(), "Signature verified", LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Signature not verified", LENGTH_SHORT).show();
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

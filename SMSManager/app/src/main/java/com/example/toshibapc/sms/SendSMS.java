@@ -21,9 +21,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import ecdsa.ECDSA;
+import ecdsa.SHA1;
 
 /**
  * Created by Acer on 11/30/2016.
@@ -80,8 +84,16 @@ public class SendSMS extends Activity {
                 header = header.concat("encrypted\n");
             }
             if (isSigned.isChecked()) {
-                //@TODO: embed signature
+                //@TODO: get private key
+                byte[] str = message.getBytes();
+                SHA1 sha = new SHA1(str, message.length()*8);
+                BigInteger e = (sha.shaAlgorithm());
+
+                ECDSA ecdsa = new ECDSA();
+                BigInteger[] signature = ecdsa.buildSignature(e, new BigInteger("123"));
+
                 header = header.concat("signed\n");
+                header = header.concat("<ds>\n" + signature[0] + "\n" + signature[1] + "\n</ds>\n");
             }
 
             message = header.concat(message);
