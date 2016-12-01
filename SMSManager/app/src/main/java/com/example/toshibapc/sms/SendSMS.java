@@ -31,6 +31,7 @@ import java.util.Date;
 public class SendSMS extends Activity {
     //private static SendSMS inst;
     private ToggleButton isEncrypt, isSigned;
+    private String header = new String();
     private Button sendBtn;
     private EditText txtPhoneNo;
     private EditText txtMessage;
@@ -67,32 +68,40 @@ public class SendSMS extends Activity {
     protected void sendSMSMessage() {
         phoneNo = txtPhoneNo.getText().toString();
         message = txtMessage.getText().toString();
+        isEncrypt = (ToggleButton) findViewById(R.id.toggleEncrypt);
+        isSigned = (ToggleButton) findViewById(R.id.toggleDigSign);
+        String header = new String();
 
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNo, null, message, null, null);
-        Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+        if (phoneNo.equals("")) {
+            Toast.makeText(getApplicationContext(), "Please enter phone number.", Toast.LENGTH_LONG).show();
+        } else {
+            if (isEncrypt.isChecked()) {
+                //@TODO: encrypt message
+                header = header.concat("encrypted\n");
+            }
+            if (isSigned.isChecked()) {
+                //@TODO: embed signature
+                header = header.concat("signed\n");
+            }
+
+            message = header.concat(message);
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNo, null, message, null, null);
+            Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(SendSMS.this, ReceiveSms.class);
+            startActivity(intent);
+        }
     }
 
     public void addListenerOnButton() {
-
-        isEncrypt = (ToggleButton) findViewById(R.id.toggleEncrypt);
-        isSigned = (ToggleButton) findViewById(R.id.toggleDigSign);
         sendBtn = (Button) findViewById(R.id.btnSendSMS);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                StringBuffer result = new StringBuffer();
-                result.append("isEncrypt? : ").append(isEncrypt.getText());
-                result.append("\nisSigned : ").append(isSigned.getText());
-
                 sendSMSMessage();
-                Intent intent = new Intent(SendSMS.this, ReceiveSms.class);
-                startActivity(intent);
-
-                Toast.makeText(SendSMS.this, result.toString(),
-                        Toast.LENGTH_SHORT).show();
             }
 
         });
