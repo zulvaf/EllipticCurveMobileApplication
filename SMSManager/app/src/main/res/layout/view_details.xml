@@ -48,4 +48,16 @@
         android:layout_gravity="center_horizontal"
         android:background="@color/colorPrimary"/>
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="50dip"
+        android:layout_marginRight="50dip"
+        android:textColor="@color/white"
+        android:text="Verify Signature"
+        android:id="@+id/btnVerify"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorPrimary"/>
+
 </LinearLayout>

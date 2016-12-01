@@ -14,19 +14,28 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.math.BigInteger;
+
+import ecdsa.ECDSA;
+import ecdsa.Point;
+
+import static android.widget.Toast.*;
 
 /**
  * Created by Acer on 12/1/2016.
  */
 public class ViewDetails extends Activity {
-    Button btn;
+    Button btnDecrypt, btnVerify;
     String message;
     String address;
     TextView textAddress, textBody;
     boolean isEncrypted=false, isSigned=false;
-    private String decryptionKey = "";
+    String decryptionKey = "";
+    String signedKeyX, signedKeyY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +57,10 @@ public class ViewDetails extends Activity {
         textBody = (TextView) findViewById(R.id.textViewBody);
         textBody.setText(message);
 
-        btn = (Button) findViewById(R.id.btnDecrypt);
-        btn.setTextColor(Color.WHITE);
+        btnDecrypt = (Button) findViewById(R.id.btnDecrypt);
+        btnDecrypt.setTextColor(Color.WHITE);
+        btnVerify = (Button) findViewById(R.id.btnVerify);
+        btnVerify.setTextColor(Color.WHITE);
 
         isEncrypted = intent.getBooleanExtra("isEncrypted", false);
         isSigned = intent.getBooleanExtra("isSigned", false);
@@ -58,26 +69,32 @@ public class ViewDetails extends Activity {
     }
 
     public void addListenerOnButton() {
-        btn.setOnClickListener(new View.OnClickListener() {
-
+        btnDecrypt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //if (isEncrypted) {
-                    getDecryptionKey();
+                    decryptMessage();
                 //}
             }
-
+        });
+        btnVerify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //if (isSigned) {
+                    verifySignature();
+                //}
+            }
         });
     }
 
-    public void getDecryptionKey() {
+    public void decryptMessage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Decryption Key");
 
         // Set up the input
         final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setHint("Enter key for decryption");
         builder.setView(input);
 
         // Set up the buttons
@@ -87,9 +104,58 @@ public class ViewDetails extends Activity {
                 //@TODO: DECRYPT
                 decryptionKey = input.getText().toString();
                 textBody.setText("hoooo"); //set text hasil decrypt
-                btn.setEnabled(false);
-                btn.setVisibility(View.GONE);
+                btnDecrypt.setEnabled(false);
+                btnDecrypt.setVisibility(View.GONE);
                 isEncrypted = false;
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    public void verifySignature() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Signed Key");
+
+        // Set up the layout
+        LinearLayout layout = new LinearLayout(this);
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(parms);
+        final EditText inputX = new EditText(this);
+        final EditText inputY = new EditText(this);
+        inputX.setInputType(InputType.TYPE_CLASS_NUMBER);
+        inputY.setInputType(InputType.TYPE_CLASS_NUMBER);
+        inputX.setHint("Enter x value of sender's key");
+        inputY.setHint("Enter y value of sender's key");
+        layout.addView(inputX);
+        layout.addView(inputY);
+        builder.setView(layout);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                signedKeyX = inputX.getText().toString();
+                signedKeyY = inputY.getText().toString();
+
+                //@TODO: VERIFY
+//                ECDSA ecdsa = new ECDSA();
+//                Point publicKey = new Point(new BigInteger(signedKeyX), new BigInteger(signedKeyY));
+//                BigInteger[] signature = new BigInteger[2]; // get signature from message
+//                BigInteger e = new BigInteger(""); // hash message to e
+//
+//                if (ecdsa.verifySignature(signature, e, publicKey)) {
+//                    Toast.makeText(getApplicationContext(), "Signature verified", LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Signature not verified", LENGTH_SHORT).show();
+//                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
