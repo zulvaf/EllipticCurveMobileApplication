@@ -87,13 +87,12 @@ public class SendSMS extends Activity {
                 result.append("isEncrypt? : ").append(isEncrypt.getText());
                 result.append("\nisSigned : ").append(isSigned.getText());
 
-                Toast.makeText(SendSMS.this, result.toString(),
-                        Toast.LENGTH_SHORT).show();
-
                 sendSMSMessage();
                 Intent intent = new Intent(SendSMS.this, ReceiveSms.class);
                 startActivity(intent);
 
+                Toast.makeText(SendSMS.this, result.toString(),
+                        Toast.LENGTH_SHORT).show();
             }
 
         });
