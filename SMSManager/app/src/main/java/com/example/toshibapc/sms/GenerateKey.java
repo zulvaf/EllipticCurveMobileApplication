@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigInteger;
@@ -25,10 +26,11 @@ import ecdsa.Point;
 public class GenerateKey extends Activity {
 
     Button generateBtn;
-    EditText privateKey;
-    ArrayAdapter arrayAdapter;
-    ArrayList<String> keyList = new ArrayList<String>();
-    ListView keyListView;
+    EditText privateKeyEditText;
+    TextView privateKeyTextView;
+    TextView publicKeyTextView;
+    TextView privateKeyTitle;
+    TextView publicKeyTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +43,11 @@ public class GenerateKey extends Activity {
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
 
         generateBtn = (Button) findViewById(R.id.btnGenerate);
-        privateKey = (EditText) findViewById(R.id.editText);
-
-        keyListView = (ListView) findViewById(R.id.KeyList);
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, keyList);
-        keyListView.setAdapter(arrayAdapter);
+        privateKeyEditText = (EditText) findViewById(R.id.editText);
+        privateKeyTextView = (TextView) findViewById(R.id.privateKey);
+        publicKeyTextView = (TextView) findViewById(R.id.publicKey);
+        privateKeyTitle = (TextView) findViewById(R.id.privateKeyTitle);
+        publicKeyTitle = (TextView) findViewById(R.id.publicKeyTitle);
 
         generateBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -55,13 +57,17 @@ public class GenerateKey extends Activity {
     }
 
     protected void generateKey() {
-        BigInteger priKey = new BigInteger(privateKey.getText().toString());
+        BigInteger priKey = new BigInteger(privateKeyEditText.getText().toString());
 
         ECDSA ecdsa = new ECDSA();
         Point publicKey = ecdsa.getPublicKey(priKey);
 
-        arrayAdapter.clear();
-        String str = "Private key: " + priKey + "\n" + "Public key: \n" + publicKey.getX() + "\n" + publicKey.getY();
-        arrayAdapter.add(str);
+        privateKeyTextView.setText(priKey.toString());
+        publicKeyTextView.setText(publicKey.getX().toString() + "\n" + publicKey.getY().toString());
+
+        privateKeyTextView.setVisibility(View.VISIBLE);
+        publicKeyTextView.setVisibility(View.VISIBLE);
+        privateKeyTitle.setVisibility(View.VISIBLE);
+        publicKeyTitle.setVisibility(View.VISIBLE);
     }
 }
