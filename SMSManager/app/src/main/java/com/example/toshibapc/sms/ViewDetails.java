@@ -55,17 +55,21 @@ public class ViewDetails extends Activity {
         textAddress.setText(address);
         textAddress.setTypeface(null, Typeface.BOLD);
 
+        isEncrypted = intent.getExtras().getBoolean("isEncrypted");
+        isSigned = intent.getExtras().getBoolean("isSigned");
+
         message = intent.getStringExtra("body");
         textBody = (TextView) findViewById(R.id.textViewBody);
-        textBody.setText(message);
+        if (isSigned) {
+            textBody.setText(message + "\n\n<ds>\n" + getIntent().getStringArrayExtra("siganture")[0] + "\n" + getIntent().getStringArrayExtra("siganture")[1] + "\n</ds>");
+        } else {
+            textBody.setText(message);
+        }
 
         btnDecrypt = (Button) findViewById(R.id.btnDecrypt);
         btnDecrypt.setTextColor(Color.WHITE);
         btnVerify = (Button) findViewById(R.id.btnVerify);
         btnVerify.setTextColor(Color.WHITE);
-
-        isEncrypted = intent.getExtras().getBoolean("isEncrypted");
-        isSigned = intent.getExtras().getBoolean("isSigned");
 
         addListenerOnButton();
         if (!isEncrypted) {
