@@ -88,9 +88,6 @@ public class SendSMS extends Activity {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNo, null, message, null, null);
             Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
-
-            Intent intent = new Intent(SendSMS.this, ReceiveSms.class);
-            startActivity(intent);
         }
     }
 

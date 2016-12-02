@@ -46,10 +46,12 @@ public class ViewDetails extends Activity {
         btn = (Button) findViewById(R.id.btnDecrypt);
         btn.setTextColor(Color.WHITE);
 
-        isEncrypted = intent.getBooleanExtra("isEncrpted", false);
-        isSigned = intent.getBooleanExtra("isSigned", false);
+        isEncrypted = intent.getExtras().getBoolean("isEncrypted");
+        isSigned = intent.getExtras().getBoolean("isSigned");
 
-        addListenerOnButton();
+        if (isEncrypted) {
+            addListenerOnButton();
+        }
     }
 
     public void addListenerOnButton() {
@@ -57,13 +59,16 @@ public class ViewDetails extends Activity {
 
             @Override
             public void onClick(View v) {
-                //if (isEncrypted) {
+                if (isEncrypted) {
                     //@TODO: DECRYPT
-                    Toast.makeText(getApplicationContext(), "Please enter phone number.", Toast.LENGTH_LONG).show();
                     textBody.setText("hoooo"); //set text hasil decrypt
-                    btn.setEnabled(false);
+                    btn.setText("Encrypt");
                     isEncrypted = false;
-                //}
+                } else {
+                    textBody.setText(message);
+                    btn.setText("Decrypt");
+                    isEncrypted = true;
+                }
             }
 
         });
