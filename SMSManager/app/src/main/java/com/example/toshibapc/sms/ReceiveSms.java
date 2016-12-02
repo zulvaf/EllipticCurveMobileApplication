@@ -87,6 +87,8 @@ public class ReceiveSms extends Activity implements OnItemClickListener {
 
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
         String[] signature = new String[2];
+        isEncrypted = false;
+        isSigned = false;
         try {
             String[] smsMessages = smsMessagesList.get(pos).split("\n");
             String address = smsMessages[0];

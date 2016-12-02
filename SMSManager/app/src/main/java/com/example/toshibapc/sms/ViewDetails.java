@@ -67,12 +67,15 @@ public class ViewDetails extends Activity {
         isEncrypted = intent.getExtras().getBoolean("isEncrypted");
         isSigned = intent.getExtras().getBoolean("isSigned");
 
-        //if (isEncrypted) {
-            addListenerOnButton();
-        /*} else {
+        addListenerOnButton();
+        if (!isEncrypted) {
             btnDecrypt.setEnabled(false);
             btnDecrypt.setVisibility(View.GONE);
-        }*/
+        }
+        if (!isSigned) {
+            btnVerify.setEnabled(false);
+            btnVerify.setVisibility(View.GONE);
+        }
     }
 
     public void addListenerOnButton() {
