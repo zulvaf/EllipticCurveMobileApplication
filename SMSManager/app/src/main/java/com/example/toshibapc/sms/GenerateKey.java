@@ -51,14 +51,17 @@ public class GenerateKey extends Activity {
 
         generateBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                generateKey();
+                if (privateKeyEditText.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "Please enter the private key.", Toast.LENGTH_LONG).show();
+                } else {
+                    generateKey();
+                }
             }
         });
     }
 
     protected void generateKey() {
         BigInteger priKey = new BigInteger(privateKeyEditText.getText().toString());
-
         ECDSA ecdsa = new ECDSA();
         Point publicKey = ecdsa.getPublicKey(priKey);
 
