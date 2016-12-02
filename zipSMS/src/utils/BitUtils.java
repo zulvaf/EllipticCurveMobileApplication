@@ -1,5 +1,6 @@
 package utils;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
 public class BitUtils {
@@ -97,5 +98,28 @@ public class BitUtils {
             bf.put(left);
             bf.put(rigth);
             return bf.array();
+    }
+    
+    public static String byteToHex(byte[] bytes) {
+        String encrypted="";
+        for(int i=0; i<bytes.length; i++) {
+            int idx = bytes[i] + 128;                       
+            String hex = String.format("%02X", idx);
+            encrypted+= hex;
+        }
+        return encrypted;
+    }
+    
+    public static byte[] hexToBytes(String text) {
+        int j =0;
+        
+        byte[] btext = new byte[text.length()];
+        for(int i=0; i<text.length(); i=i+2) {           
+            String hex = text.substring(i, i+2);
+            int value = Integer.parseInt(hex, 16) - 128;  
+            btext[j] = (byte) value;
+            j++;
+        }
+        return btext;
     }
 }

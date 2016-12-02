@@ -27,6 +27,7 @@ public class MiniBlockCipher {
             byte[] newText = completeBlock(text);
             byte[] newKey = completeKey(key);
             byte[][] blocks = bytesToBlocks(text,16);
+            
             ByteBuffer buffer = ByteBuffer.allocate(newText.length);
             for(int i = 0; i < blocks.length; i++) {
                     byte[] encBlock = encryptBlock(blocks[i], newKey);
@@ -45,7 +46,7 @@ public class MiniBlockCipher {
                     byte[] decBlock = decryptBlock(blocks[i], newKey);
                     buffer.put(decBlock);
             }
-            return buffer.array();
+            return deletePadding(buffer.array());
     }
 
     public byte[] encryptBlock(byte[] text, byte[] key) {
@@ -85,6 +86,7 @@ public class MiniBlockCipher {
             byte[] newKey = completeKey(key);
             byte[] initialValue = "thisisinitialval".getBytes();
 
+            
             byte[][] blocks = bytesToBlocks(text,16);
             ByteBuffer buffer = ByteBuffer.allocate(newText.length);
 
@@ -264,11 +266,39 @@ public class MiniBlockCipher {
     }
 
     private byte[][] bytesToBlocks(byte[] bytes, int size) {
-            int numBlock = bytes.length / size;
-            byte[][] blocks = new byte[numBlock][size];
-            for(int i = 0; i < blocks.length; i++) {
-                    System.arraycopy(bytes, i*size, blocks[i], 0, size);
-            }
-            return blocks;
+
+        int mod = bytes.length % size;
+        int numBlock;
+
+        if(mod == 0) {
+            numBlock = bytes.length / size;
+        } else {
+            numBlock = bytes.length / size + 1;
+        }
+
+        byte[][] blocks = new byte[numBlock][size];
+        for(int i = 0; i < blocks.length; i++) {
+            if(i == blocks.length-1 && mod!=0){
+                System.arraycopy(bytes, i*size, blocks[i], 0, mod);
+                for(int j=mod; j<size-mod; j++){
+                    blocks[i][j] = (byte)0;
+                }
+            } else {
+                System.arraycopy(bytes, i*size, blocks[i], 0, size);
+            }                     
+        }
+        return blocks;
+    }
+    
+    public byte[] deletePadding(byte[] bytes) {
+        int i=0;
+        
+        while(bytes[i]!=(byte)0) {
+            i++;
+        }
+
+        byte[] result = new byte[i];
+        System.arraycopy(bytes, 0, result, 0, i);
+        return result;
     }
 }
