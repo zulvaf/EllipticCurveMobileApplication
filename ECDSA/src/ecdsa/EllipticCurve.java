@@ -16,14 +16,17 @@ public class EllipticCurve {
     private BigInteger a, b, p;
     private int koblitz;
     public EllipticCurve() {
-      this.a = BigInteger.valueOf(12312);
-      this.b = BigInteger.valueOf(5346345);
-      BigInteger two192 = BigInteger.valueOf(2).pow(192);
-      BigInteger two64 = BigInteger.valueOf(2).pow(64);
-      this.p = two192.subtract(two64).subtract(BigInteger.ONE);
+        this.p = new BigInteger("4451685225093714772084598273548427");
+        this.a = new BigInteger("4451685225093714772084598273548424");
+        this.b = new BigInteger("2061118396808653202902996166388514");
+//      this.a = BigInteger.valueOf(12312);
+//      this.b = BigInteger.valueOf(5346345);
+//      BigInteger two192 = BigInteger.valueOf(2).pow(192);
+//      BigInteger two64 = BigInteger.valueOf(2).pow(64);
+//      this.p = two192.subtract(two64).subtract(BigInteger.ONE);
       this.koblitz = 32;
-      assert(p.isProbablePrime(32));
-      assert(!this.a.modPow(BigInteger.valueOf(3), p).multiply(BigInteger.valueOf(4)).add(b.add(b).multiply(BigInteger.valueOf(27))).mod(p).equals(BigInteger.ZERO));
+//      assert(p.isProbablePrime(32));
+//      assert(!this.a.modPow(BigInteger.valueOf(3), p).multiply(BigInteger.valueOf(4)).add(b.add(b).multiply(BigInteger.valueOf(27))).mod(p).equals(BigInteger.ZERO));
     }
     public EllipticCurve(int koblitz) {
       this.a = BigInteger.valueOf(12312);
