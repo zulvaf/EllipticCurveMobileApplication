@@ -132,7 +132,7 @@ public class SendSMS extends Activity {
                 BigInteger e = (sha.shaAlgorithm());
 
                 ECDSA ecdsa = new ECDSA();
-                BigInteger[] signature = ecdsa.buildSignature(e, new BigInteger(privateKey));
+                String[] signature = ecdsa.buildSignature(e, new BigInteger(privateKey));
 
                 header = header.concat("signed\n");
                 header = header.concat("<ds>\n" + signature[0] + "\n" + signature[1] + "\n</ds>\n");

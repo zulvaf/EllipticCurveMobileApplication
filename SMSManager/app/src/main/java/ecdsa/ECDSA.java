@@ -3,6 +3,8 @@ package ecdsa;
 import java.math.BigInteger;
 import java.util.Random;
 
+import utils.BitUtils;
+
 public class ECDSA {
     protected EllipticCurve curve;
     protected Point G;
@@ -20,7 +22,7 @@ public class ECDSA {
         return curve.multiply(privateKey, G);
     }
 
-    public BigInteger[] buildSignature(BigInteger e, BigInteger privateKey) {
+    public String[] buildSignature(BigInteger e, BigInteger privateKey) {
         BigInteger[] signature = new BigInteger[2];
         BigInteger k;
         do {
@@ -35,10 +37,18 @@ public class ECDSA {
             BigInteger inverseK = k.modInverse(n);
             signature[1] = privateKey.multiply(signature[0]).add(e).multiply(inverseK).mod(n);
         } while (signature[1].compareTo(BigInteger.ZERO) == 0); // signature[1] can't be zero
-        return signature;
+
+        String[] result = new String[2];
+        result[0] = signature[0].toString(16);
+        result[1] = signature[1].toString(16);
+        return result;
     }
 
-    public boolean verifySignature(BigInteger[] signature, BigInteger e, Point publicKey) {
+    public boolean verifySignature(String[] signatureHex, BigInteger e, Point publicKey) {
+        BigInteger[] signature = new BigInteger[2];
+        signature[0] = new BigInteger(signatureHex[0], 16);
+        signature[1] = new BigInteger(signatureHex[1], 16);
+
         // signature[0] and signature[1] must be between 0 and n
         if (signature[0].compareTo(BigInteger.ZERO) < 0 || signature[0].compareTo(n) > 0)
             return false;

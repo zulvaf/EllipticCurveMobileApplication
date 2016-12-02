@@ -179,9 +179,9 @@ public class ViewDetails extends Activity {
 
                     ECDSA ecdsa = new ECDSA();
                     Point publicKey = new Point(new BigInteger(signedKeyX), new BigInteger(signedKeyY));
-                    BigInteger[] signature = new BigInteger[2];
-                    signature[0] = new BigInteger(getIntent().getStringArrayExtra("siganture")[0]);
-                    signature[1] = new BigInteger(getIntent().getStringArrayExtra("siganture")[1]);
+                    String[] signature = new String[2];
+                    signature[0] = getIntent().getStringArrayExtra("siganture")[0];
+                    signature[1] = getIntent().getStringArrayExtra("siganture")[1];
                     // hash message to e
                     byte[] str = message.getBytes();
                     SHA1 sha = new SHA1(str, message.length() * 8);
