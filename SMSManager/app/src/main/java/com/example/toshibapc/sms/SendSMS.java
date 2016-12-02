@@ -1,7 +1,9 @@
 package com.example.toshibapc.sms;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -10,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
+import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -74,32 +77,22 @@ public class SendSMS extends Activity {
         message = txtMessage.getText().toString();
         isEncrypt = (ToggleButton) findViewById(R.id.toggleEncrypt);
         isSigned = (ToggleButton) findViewById(R.id.toggleDigSign);
-        String header = new String();
 
         if (phoneNo.equals("")) {
             Toast.makeText(getApplicationContext(), "Please enter phone number.", Toast.LENGTH_LONG).show();
         } else {
             if (isEncrypt.isChecked()) {
-                //@TODO: encrypt message
-                header = header.concat("encrypted\n");
+                encryptMessage();
+            } else {
+                if (isSigned.isChecked()) {
+                    signMessage();
+                } else {
+                    message = header.concat(message);
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                    Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+                }
             }
-            if (isSigned.isChecked()) {
-                //@TODO: get private key
-                byte[] str = message.getBytes();
-                SHA1 sha = new SHA1(str, message.length()*8);
-                BigInteger e = (sha.shaAlgorithm());
-
-                ECDSA ecdsa = new ECDSA();
-                BigInteger[] signature = ecdsa.buildSignature(e, new BigInteger("123"));
-
-                header = header.concat("signed\n");
-                header = header.concat("<ds>\n" + signature[0] + "\n" + signature[1] + "\n</ds>\n");
-            }
-
-            message = header.concat(message);
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNo, null, message, null, null);
-            Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -114,5 +107,86 @@ public class SendSMS extends Activity {
             }
 
         });
+    }
+
+    public void signMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Private Key");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setHint("Enter your private key");
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String privateKey = input.getText().toString();
+
+                byte[] str = message.getBytes();
+                SHA1 sha = new SHA1(str, message.length()*8);
+                BigInteger e = (sha.shaAlgorithm());
+
+                ECDSA ecdsa = new ECDSA();
+                BigInteger[] signature = ecdsa.buildSignature(e, new BigInteger(privateKey));
+
+                header = header.concat("signed\n");
+                header = header.concat("<ds>\n" + signature[0] + "\n" + signature[1] + "\n</ds>\n");
+
+                message = header.concat(message);
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    public void encryptMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Encryption Key");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setHint("Enter encryption key");
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //@TODO: encrypt
+                header = header.concat("encrypted\n");
+                String encryptionKey = input.getText().toString();
+                message = encryptionKey;
+
+                if (isSigned.isChecked()) {
+                    signMessage();
+                } else {
+                    message = header.concat(message);
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                    Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }
