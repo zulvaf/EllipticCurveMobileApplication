@@ -116,18 +116,25 @@ public class ViewDetails extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 // decrypt message
                 decryptionKey = input.getText().toString();
-                byte[] bkey = decryptionKey.getBytes();
-                MiniBlockCipher myCipher = new MiniBlockCipher(bkey);
-                byte[] btext = BitUtils.hexToBytes(message);
-                byte[] bres = myCipher.decrypt(btext, bkey);
+                if (decryptionKey.equals("")) {
+                    Toast.makeText(getApplicationContext(), "Enter decryption key", LENGTH_SHORT).show();
+                } else if (decryptionKey.length() != 16) {
+                    Toast.makeText(getApplicationContext(), "Key length must be 16 characters", LENGTH_SHORT).show();
+                } else {
+                    byte[] bkey = decryptionKey.getBytes();
+                    MiniBlockCipher myCipher = new MiniBlockCipher(bkey);
+                    byte[] btext = BitUtils.hexToBytes(message);
+                    byte[] bres = myCipher.decrypt(btext, bkey);
 
-                try {
-                    textBody.setText(new String(bres, "UTF-8"));
-                } catch (Exception e) {}
+                    try {
+                        textBody.setText(new String(bres, "UTF-8"));
+                    } catch (Exception e) {
+                    }
 
-                isEncrypted = false;
-                btnDecrypt.setEnabled(false);
-                btnDecrypt.setVisibility(View.GONE);
+                    isEncrypted = false;
+                    btnDecrypt.setEnabled(false);
+                    btnDecrypt.setVisibility(View.GONE);
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -166,20 +173,25 @@ public class ViewDetails extends Activity {
                 signedKeyX = inputX.getText().toString();
                 signedKeyY = inputY.getText().toString();
 
-                ECDSA ecdsa = new ECDSA();
-                Point publicKey = new Point(new BigInteger(signedKeyX), new BigInteger(signedKeyY));
-                BigInteger[] signature = new BigInteger[2];
-                signature[0] = new BigInteger(getIntent().getStringArrayExtra("siganture")[0]);
-                signature[1] = new BigInteger(getIntent().getStringArrayExtra("siganture")[1]);
-                // hash message to e
-                byte[] str = message.getBytes();
-                SHA1 sha = new SHA1(str, message.length()*8);
-                BigInteger e = (sha.shaAlgorithm());
-
-                if (ecdsa.verifySignature(signature, e, publicKey)) {
-                    Toast.makeText(getApplicationContext(), "Signature verified", LENGTH_SHORT).show();
+                if (signedKeyX.equals("") || signedKeyY.equals("")) {
+                    Toast.makeText(getApplicationContext(), "fields are required", LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Signature not verified", LENGTH_SHORT).show();
+
+                    ECDSA ecdsa = new ECDSA();
+                    Point publicKey = new Point(new BigInteger(signedKeyX), new BigInteger(signedKeyY));
+                    BigInteger[] signature = new BigInteger[2];
+                    signature[0] = new BigInteger(getIntent().getStringArrayExtra("siganture")[0]);
+                    signature[1] = new BigInteger(getIntent().getStringArrayExtra("siganture")[1]);
+                    // hash message to e
+                    byte[] str = message.getBytes();
+                    SHA1 sha = new SHA1(str, message.length() * 8);
+                    BigInteger e = (sha.shaAlgorithm());
+
+                    if (ecdsa.verifySignature(signature, e, publicKey)) {
+                        Toast.makeText(getApplicationContext(), "Signature verified", LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Signature not verified", LENGTH_SHORT).show();
+                    }
                 }
             }
         });
