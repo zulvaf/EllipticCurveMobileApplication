@@ -31,6 +31,8 @@ import java.util.Date;
 
 import ecdsa.ECDSA;
 import ecdsa.SHA1;
+import miniblockcipher.MiniBlockCipher;
+import utils.BitUtils;
 
 /**
  * Created by Acer on 11/30/2016.
@@ -157,7 +159,7 @@ public class SendSMS extends Activity {
 
         // Set up the input
         final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setHint("Enter encryption key");
         builder.setView(input);
 
@@ -165,10 +167,20 @@ public class SendSMS extends Activity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //@TODO: encrypt
                 header = header.concat("encrypted\n");
                 String encryptionKey = input.getText().toString();
-                message = encryptionKey;
+
+                // Encrypt message
+                try {
+                    byte[] btext = message.getBytes("UTF-8");
+                    byte[] bkey = encryptionKey.getBytes("UTF-8");
+
+                    MiniBlockCipher myCipher = new MiniBlockCipher(bkey);
+                    byte[] bres = myCipher.encrypt(btext, bkey);
+
+                    message = BitUtils.byteToHex(bres);
+                } catch (Exception e) {
+                }
 
                 if (isSigned.isChecked()) {
                     signMessage();

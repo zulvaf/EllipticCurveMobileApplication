@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import ecdsa.ECDSA;
 import ecdsa.Point;
 import ecdsa.SHA1;
+import miniblockcipher.MiniBlockCipher;
+import utils.BitUtils;
 
 import static android.widget.Toast.*;
 
@@ -112,10 +114,20 @@ public class ViewDetails extends Activity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //@TODO: DECRYPT
+                // decrypt message
                 decryptionKey = input.getText().toString();
-                textBody.setText("hoooo"); //set text hasil decrypt
+                byte[] bkey = decryptionKey.getBytes();
+                MiniBlockCipher myCipher = new MiniBlockCipher(bkey);
+                byte[] btext = BitUtils.hexToBytes(message);
+                byte[] bres = myCipher.decrypt(btext, bkey);
+
+                try {
+                    textBody.setText(new String(bres, "UTF-8"));
+                } catch (Exception e) {}
+
                 isEncrypted = false;
+                btnDecrypt.setEnabled(false);
+                btnDecrypt.setVisibility(View.GONE);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
